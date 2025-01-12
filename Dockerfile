@@ -18,7 +18,6 @@ WORKDIR /app
 
 # 从构建阶段复制二进制文件和配置文件
 COPY --from=builder /app/bark-server .
-COPY config.json .
 
 # 暴露端口
 EXPOSE 8080
