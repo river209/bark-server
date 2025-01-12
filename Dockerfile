@@ -1,4 +1,4 @@
-# 基础镜像
+# 第一阶段：构建阶段
 FROM golang:1.18 AS builder
 
 # 设置工作目录
@@ -7,20 +7,21 @@ WORKDIR /app
 # 复制项目代码
 COPY . .
 
-# 编译服务
+# 编译服务为可执行文件
 RUN go build -o bark-server
 
-# 创建最终运行镜像
+# 第二阶段：运行阶段
 FROM debian:bullseye-slim
 
-# 设置运行目录
+# 设置工作目录
 WORKDIR /app
 
-# 从构建阶段复制二进制文件
+# 从构建阶段复制二进制文件和配置文件
 COPY --from=builder /app/bark-server .
+COPY config.json .
 
 # 暴露端口
 EXPOSE 8080
 
-# 设置启动命令
-CMD ["./bark-server"]
+# 启动服务
+CMD ["./bark-server", "-serverless", "true"]
